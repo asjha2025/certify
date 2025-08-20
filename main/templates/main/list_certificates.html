@@ -322,10 +322,9 @@
         <div class="header">
             <h1>عرض الشهادات</h1>
             <p>إدارة وعرض جميع الشهادات المنشأة في النظام</p>
-        </div>
-        
-        <div class="content">
-            <!-- قسم البحث -->
+        </di        <div class="content">
+            {% csrf_token %}
+            <!-- شريط البحث والإجراءات -->
             <div class="search-section">
                 <form method="get" style="display: flex; gap: 15px; align-items: center; flex: 1; flex-wrap: wrap;">
                     <input 
@@ -371,9 +370,9 @@
                                     📥 تحميل PDF
                                 </a>
                             {% endif %}
-                            <button class="action-btn edit-btn" onclick="editCertificate({{ cert.id }})">
+                            <a href="{% url 'main:edit_certificate' cert.id %}" class="action-btn edit-btn">
                                 ✏️ تعديل
-                            </button>
+                            </a>
                             <button class="action-btn delete-btn" onclick="deleteCertificate({{ cert.id }})">
                                 🗑️ حذف
                             </button>
@@ -396,15 +395,25 @@
     </div>
     
     <script>
-        function editCertificate(certId) {
-            // يمكن تطوير هذه الوظيفة لاحقاً
-            alert('ميزة التعديل ستكون متاحة قريباً');
-        }
-        
         function deleteCertificate(certId) {
-            if (confirm('هل أنت متأكد من حذف هذه الشهادة؟')) {
-                // يمكن إضافة طلب AJAX هنا لحذف الشهادة
-                alert('ميزة الحذف ستكون متاحة قريباً');
+            if (confirm('هل أنت متأكد من حذف هذه الشهادة؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                // إنشاء نموذج مخفي لإرسال طلب الحذف
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/delete/${certId}/`;
+                
+                // إضافة CSRF token
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrfToken) {
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = 'csrfmiddlewaretoken';
+                    csrfInput.value = csrfToken.value;
+                    form.appendChild(csrfInput);
+                }
+                
+                document.body.appendChild(form);
+                form.submit();
             }
         }
         
@@ -412,12 +421,14 @@
         const searchInput = document.querySelector('.search-input');
         let searchTimeout;
         
-        searchInput.addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                // يمكن إضافة بحث فوري هنا
-            }, 500);
-        });
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    // يمكن إضافة بحث فوري هنا
+                }, 500);
+            });
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعديل الشهادة - نظام إدارة الشهادات</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .preview-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .preview-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .certificate-preview {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            border: 3px solid #4facfe;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4facfe;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border: 2px dashed #ff9a56;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #d4691a;
+            font-weight: 600;
+        }
+
+        .file-input-label:hover {
+            background: linear-gradient(135deg, #fcb69f 0%, #ffecd2 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(240, 147, 251, 0.4);
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>تعديل الشهادة</h1>
+            <p>قم بتعديل البيانات التالية لتحديث الشهادة</p>
+        </div>
+
+        <div class="form-container">
+            <div class="preview-section">
+                <h3>معاينة الشهادة</h3>
+                <div class="certificate-preview">
+                    <h2 id="preview-name">{{ cert.employee_name }}</h2>
+                    <p id="preview-course">{{ cert.course_title }}</p>
+                    <p id="preview-date">{{ cert.issue_date|date:"d/m/Y" }}</p>
+                </div>
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.employee_name.id_for_label }}">اسم الموظف <span class="required">*</span></label>
+                    {{ form.employee_name }}
+                    <small>سيظهر هذا الاسم على الشهادة</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.course_title.id_for_label }}">عنوان الدورة <span class="required">*</span></label>
+                    {{ form.course_title }}
+                    <small>مثال: دورة البرمجة المتقدمة، برنامج إدارة المشاريع</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.issue_date.id_for_label }}">تاريخ الإصدار <span class="required">*</span></label>
+                    {{ form.issue_date }}
+                    <small>تاريخ إنهاء الدورة أو استحقاق الشهادة</small>
+                </div>
+
+           
+
+                <div class="btn-container">
+                    <a href="{% url 'main:list_certificates' %}" class="btn btn-secondary">← رجوع</a>
+                    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // تحديث المعاينة عند تغيير البيانات
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameInput = document.querySelector('input[name="employee_name"]');
+            const courseInput = document.querySelector('input[name="course_title"]');
+            const dateInput = document.querySelector('input[name="issue_date"]');
+            
+            const previewName = document.getElementById('preview-name');
+            const previewCourse = document.getElementById('preview-course');
+            const previewDate = document.getElementById('preview-date');
+
+            function updatePreview() {
+                previewName.textContent = nameInput.value || 'اسم الموظف';
+                previewCourse.textContent = courseInput.value || 'عنوان الدورة';
+                
+                if (dateInput.value) {
+                    const date = new Date(dateInput.value);
+                    previewDate.textContent = date.toLocaleDateString('ar-SA');
+                } else {
+                    previewDate.textContent = '{{ cert.issue_date|date:"d/m/Y" }}';
+                }
+            }
+
+            nameInput.addEventListener('input', updatePreview);
+            courseInput.addEventListener('input', updatePreview);
+            dateInput.addEventListener('change', updatePreview);
+
+            // تحديث نص اختيار الملف
+            const fileInput = document.querySelector('input[type="file"]');
+            const fileLabel = document.querySelector('.file-input-label');
+            
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    fileLabel.textContent = '📁 تم اختيار: ' + this.files[0].name;
+                } else {
+                    fileLabel.textContent = '📁 اختر ملف الشعار';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

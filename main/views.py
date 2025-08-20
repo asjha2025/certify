@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.http import FileResponse
@@ -33,18 +34,12 @@ def upload_excel(request):
     if request.method == "POST":
         form = UploadExcelForm(request.POST, request.FILES)
         if form.is_valid():
-            # اقرأ ملف الإكسل
             df = pd.read_excel(request.FILES['file'])
-
-            # تحويل عمود التاريخ إلى كائنات تاريخ
-            # to_datetime ستقوم بتحويل الصيغ المختلفة إلى كائن تاريخ موحد
-            df['issue_date'] = pd.to_datetime(df['issue_date']).dt.date
-
             for _, row in df.iterrows():
                 cert = Certificate.objects.create(
                     employee_name=row['employee_name'],
                     course_title=row['course_title'],
-                    issue_date=row['issue_date']  # الآن هذا كائن تاريخ
+                    issue_date=row['issue_date']
                 )
                 pdf_path = generate_certificate(cert)
                 cert.pdf_file.name = pdf_path.replace("media/", "")
@@ -65,3 +60,43 @@ def download_certificate(request, cert_id):
     cert = Certificate.objects.get(id=cert_id)
     return FileResponse(open(cert.pdf_file.path, "rb"), as_attachment=True)
 
+
+def edit_certificate(request, cert_id):
+    """
+    تعديل شهادة موجودة
+    """
+    try:
+        cert = Certificate.objects.get(id=cert_id)
+    except Certificate.DoesNotExist:
+        return redirect("main:list_certificates")
+    
+    if request.method == "POST":
+        form = CertificateForm(request.POST, request.FILES, instance=cert)
+        if form.is_valid():
+            cert = form.save()
+            # إعادة توليد ملف PDF بالبيانات الجديدة
+            pdf_path = generate_certificate(cert)
+            cert.pdf_file.name = pdf_path.replace("media/", "")
+            cert.save()
+            return redirect("main:list_certificates")
+    else:
+        form = CertificateForm(instance=cert)
+    
+    return render(request, "main/edit_certificate.html", {"form": form, "cert": cert})
+
+def delete_certificate(request, cert_id):
+    """
+    حذف شهادة
+    """
+    try:
+        cert = Certificate.objects.get(id=cert_id)
+        # حذف ملف PDF من النظام
+        import os
+        if cert.pdf_file and os.path.exists(cert.pdf_file.path):
+            os.remove(cert.pdf_file.path)
+        # حذف الشهادة من قاعدة البيانات
+        cert.delete()
+    except Certificate.DoesNotExist:
+        pass
+    
+    return redirect("main:list_certificates")

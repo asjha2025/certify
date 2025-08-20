@@ -9,4 +9,6 @@ urlpatterns = [
     path('upload-excel/', views.upload_excel, name="upload_excel"),
     path('certificates/', views.list_certificates, name="list_certificates"),
     path('download/<int:cert_id>/', views.download_certificate, name="download_certificate"),
+    path('edit/<int:cert_id>/', views.edit_certificate, name="edit_certificate"),
+    path('delete/<int:cert_id>/', views.delete_certificate, name="delete_certificate"),
 ]
