@@ -1,0 +1,17 @@
+* {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: rgb(255, 255, 255);
+}
+
+.wrapper {
+    min-height: 70vh;
+}
+
+p {
+    white-space: pre-wrap;
+}

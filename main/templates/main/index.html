@@ -1,0 +1,50 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}الرئيسية{% endblock %}
+
+{% block content %}
+<div class="row mt-3">
+  <div class="col-12 col-md-6 order-2 order-md-1 d-flex flex-column justify-content-center gap-2">
+    <h2>إنشاء مدونتك</h2>
+    <p>المدونة عبارة عن يوميات إلكترونية يمكن للآخرين الاطلاع عليها ومشاركة التعليقات. تشجع الطلاب على التعبير عن آرائهم بوضوح وتغطي مختلف جوانب التعليم الاجتماعي.</p>
+  </div>
+  <div class="col order-1 order-md-2">
+    <img class="w-100 rounded-5" src="{% static 'images/images (2).png' %}" alt="Blog Image" />
+  </div>
+</div>
+
+<hr />
+
+<div class="row mt-5">
+  <div class="col-md-4 mb-3">
+    <div class="card text-center h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">إنشاء شهادة فردية</h5>
+        <p class="card-text">أدخل بيانات الموظف لإنشاء شهادة PDF مباشرة.</p>
+        <a href="{% url 'main:create_certificate' %}" class="btn btn-primary">ابدأ الآن</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <div class="card text-center h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">رفع ملفات Excel</h5>
+        <p class="card-text">استورد بيانات الموظفين والدورات لإنشاء شهادات متعددة دفعة واحدة.</p>
+        <a href="{% url 'main:upload_excel' %}" class="btn btn-success">رفع الملفات</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <div class="card text-center h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">عرض الشهادات</h5>
+        <p class="card-text">تصفح جميع الشهادات التي تم إصدارها مع روابط التنزيل.</p>
+        <a href="/certificates" class="btn btn-warning">عرض الشهادات</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

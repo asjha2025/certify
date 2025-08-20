@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء شهادة جديدة - نظام إدارة الشهادات</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #4facfe;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+        
+        .form-input[type="date"] {
+            color: #495057;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #6c757d;
+        }
+        
+        .file-label:hover {
+            border-color: #4facfe;
+            background: #f0f8ff;
+            color: #4facfe;
+        }
+        
+        .file-label.has-file {
+            border-color: #28a745;
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .file-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 15px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        }
+        
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .form-actions {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .preview-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .preview-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .certificate-preview {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .certificate-preview::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 3px solid #4facfe;
+            border-radius: 8px;
+        }
+        
+        .preview-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .preview-course {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        
+        .preview-date {
+            font-size: 1rem;
+            color: #495057;
+        }
+        
+        .form-help {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .form-actions {
+                text-align: center;
+            }
+            
+            .submit-btn,
+            .back-btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>إنشاء شهادة جديدة</h1>
+            <p>قم بملء البيانات التالية لإنشاء شهادة احترافية</p>
+        </div>
+        
+        <div class="content">
+            <!-- معاينة الشهادة -->
+            <div class="preview-section">
+                <div class="preview-title">معاينة الشهادة</div>
+                <div class="certificate-preview" id="certificatePreview">
+                    <div class="preview-name" id="previewName">اسم الموظف</div>
+                    <div class="preview-course" id="previewCourse">عنوان الدورة</div>
+                    <div class="preview-date" id="previewDate">تاريخ الإصدار</div>
+                </div>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data" id="certificateForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label class="form-label">اسم الموظف <span class="required">*</span></label>
+                    <input 
+                        type="text" 
+                        name="employee_name" 
+                        class="form-input" 
+                        placeholder="أدخل اسم الموظف كاملاً"
+                        required
+                        id="employeeName"
+                    >
+                    <div class="form-help">سيظهر هذا الاسم على الشهادة</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">عنوان الدورة <span class="required">*</span></label>
+                    <input 
+                        type="text" 
+                        name="course_title" 
+                        class="form-input" 
+                        placeholder="أدخل عنوان الدورة أو البرنامج التدريبي"
+                        required
+                        id="courseTitle"
+                    >
+                    <div class="form-help">مثال: دورة البرمجة المتقدمة، برنامج إدارة المشاريع</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">تاريخ الإصدار <span class="required">*</span></label>
+                    <input 
+                        type="date" 
+                        name="issue_date" 
+                        class="form-input" 
+                        required
+                        id="issueDate"
+                    >
+                    <div class="form-help">تاريخ إنهاء الدورة أو استحقاق الشهادة</div>
+                </div>
+                
+                <!-- <div class="form-group">
+                    <label class="form-label">شعار المعهد (اختياري)</label>
+                    <div class="file-input-wrapper">
+                        <input 
+                            type="file" 
+                            name="logo" 
+                            class="file-input" 
+                            accept="image/*"
+                            id="logoFile"
+                        >
+                        <label for="logoFile" class="file-label" id="fileLabel">
+                            <span class="file-icon">📁</span>
+                            <span class="file-text">اختر ملف الشعار</span>
+                        </label>
+                    </div>
+                    <div class="form-help">يُفضل استخدام صور بصيغة PNG أو JPG بحجم لا يزيد عن 2MB</div>
+                </div> -->
+                
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">🏆 إنشاء الشهادة</button>
+                    <a href="{% url 'main:home_view' %}" class="back-btn">← رجوع</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // معاينة مباشرة للشهادة
+        const employeeName = document.getElementById('employeeName');
+        const courseTitle = document.getElementById('courseTitle');
+        const issueDate = document.getElementById('issueDate');
+        const previewName = document.getElementById('previewName');
+        const previewCourse = document.getElementById('previewCourse');
+        const previewDate = document.getElementById('previewDate');
+        
+        employeeName.addEventListener('input', function() {
+            previewName.textContent = this.value || 'اسم الموظف';
+        });
+        
+        courseTitle.addEventListener('input', function() {
+            previewCourse.textContent = this.value || 'عنوان الدورة';
+        });
+        
+        issueDate.addEventListener('change', function() {
+            if (this.value) {
+                const date = new Date(this.value);
+                const formattedDate = date.toLocaleDateString('ar-SA');
+                previewDate.textContent = formattedDate;
+            } else {
+                previewDate.textContent = 'تاريخ الإصدار';
+            }
+        });
+        
+        // معالجة رفع الملف
+        const logoFile = document.getElementById('logoFile');
+        const fileLabel = document.getElementById('fileLabel');
+        const fileText = fileLabel.querySelector('.file-text');
+        
+        logoFile.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                const fileName = this.files[0].name;
+                fileText.textContent = `تم اختيار: ${fileName}`;
+                fileLabel.classList.add('has-file');
+            } else {
+                fileText.textContent = 'اختر ملف الشعار';
+                fileLabel.classList.remove('has-file');
+            }
+        });
+        
+        // تحسين تجربة النموذج
+        const form = document.getElementById('certificateForm');
+        form.addEventListener('submit', function(e) {
+            const submitBtn = form.querySelector('.submit-btn');
+            submitBtn.textContent = 'جاري الإنشاء...';
+            submitBtn.disabled = true;
+        });
+        
+        // تعيين التاريخ الحالي كافتراضي
+        const today = new Date().toISOString().split('T')[0];
+        issueDate.value = today;
+        issueDate.dispatchEvent(new Event('change'));
+    </script>
+</body>
+</html>
